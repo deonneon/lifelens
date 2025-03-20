@@ -1,69 +1,85 @@
-# LifeLens - Interactive Biography Generator
+# LifeLens
 
-LifeLens is a modern web application that allows you to build comprehensive biographies by progressively adding information. Using the power of Gemini AI, it extracts key dates, events, and biographical information from your text input and presents it in a beautiful timeline format.
+LifeLens is a web application that uses AI to transform text input or website content into structured biographies.
 
 ## Features
 
-- **Intelligent Data Extraction**: Automatically extracts dates, events, and biographical details from your text
-- **Progressive Enhancement**: Add more information over time to build a complete biography
-- **Smart Merging**: Avoids duplicate events while enhancing existing entries with more detailed information
-- **Modern UI**: Clean, responsive design with a dark mode interface
-- **Local Storage**: Save and load multiple biographies
-- **Timeline Visualization**: Chronological display of key life events
+- Extract biographical information from raw text input
+- Crawl websites to extract content and generate biographies
+- Save and load multiple biographies
+- Modern and responsive UI
 
-## Getting Started
+## Setup and Installation
 
 ### Prerequisites
 
-- Node.js 16.x or higher
+- Node.js 16+ for the frontend
+- Python 3.8+ for the backend crawler
 - npm or yarn
 
-### Installation
+### Frontend Setup
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/lifelens.git
-cd lifelens
-```
-
+1. Clone the repository
 2. Install dependencies:
-```bash
+```
 npm install
-# or
-yarn
 ```
-
-3. Create a `.env` file in the root directory and add your Gemini API key:
-```
-VITE_GEMINI_API_KEY=your-api-key-here
-VITE_GEMINI_MODEL=gemini-pro
-```
-
+3. Create a `.env` file based on `.env.example` and add your API keys
 4. Start the development server:
-```bash
+```
 npm run dev
-# or
-yarn dev
 ```
 
-5. Open your browser and navigate to `http://localhost:5173`
+### Backend Crawler Setup
 
-## How to Use
+1. Install Python dependencies:
+```
+cd server
+pip install -r requirements.txt
+```
+2. Start the backend server:
+```
+python app.py
+```
 
-1. Enter text about a person, company, or concept in the input area
-2. Click "Extract Information" to process the text
-3. View the generated biography and timeline
-4. Add more information progressively to build a comprehensive biography
-5. Save your work using the "Save Current Biography" option
+### Running both together
 
-## Technologies Used
+For convenience, you can use the start script to run both the frontend and backend:
 
-- **Vite**: Next generation frontend tooling
-- **React**: UI library
-- **TypeScript**: Type-safe JavaScript
-- **TailwindCSS**: Utility-first CSS framework
-- **Google Gemini AI**: Large language model for intelligent text processing
+#### On Linux/Mac:
+```
+chmod +x start.sh
+./start.sh
+```
 
-## License
+#### On Windows:
+```
+start.bat
+```
 
-MIT
+## Usage
+
+1. Enter text directly in the input box or paste a URL to crawl
+2. Click "Extract Information" or "Crawl & Extract Information" to generate a biography
+3. Save biographies with custom names for later reference
+4. Load or clear saved biographies as needed
+
+## Technologies
+
+- Frontend: React, TypeScript, Vite, TailwindCSS
+- Backend: Flask, crawl4ai
+- AI: Google Gemini API, OpenAI API (fallback)
+
+## Configuration
+
+The application can be configured via environment variables:
+
+- `VITE_LLM_API_KEY`: OpenAI API key (optional, used as fallback)
+- `VITE_GEMINI_API_KEY`: Google Gemini API key
+- `VITE_GEMINI_MODEL`: Gemini model to use (defaults to gemini-pro)
+- `VITE_BACKEND_URL`: URL for the crawler backend (defaults to http://localhost:5000)
+
+## Notes
+
+- The crawler backend must be running for website crawling functionality to work
+- For optimal results when crawling, ensure the website contains relevant biographical information

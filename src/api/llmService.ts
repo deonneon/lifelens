@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { generateLifeStoryWithGemini } from './geminiService';
+import { crawlWebsite, CrawlRequest } from './crawlerService';
 
 export interface LLMResponse {
   bio: string;
@@ -105,4 +106,37 @@ export const generateLifeStory = async (
   // Fall back to mock data if no API keys are available
   console.warn('No API keys found, using mock data');
   return getMockData();
+};
+
+/**
+ * Crawls a website and then generates a life story from the extracted text
+ * @param url The URL to crawl
+ * @param crawlOptions Optional crawling options
+ * @returns Promise with the LLM response containing bio
+ */
+export const generateLifeStoryFromWebsite = async (
+  url: string,
+  crawlOptions?: { maxPages?: number, followLinks?: boolean }
+): Promise<LLMResponse> => {
+  try {
+    // Configure crawl request
+    const request: CrawlRequest = {
+      url,
+      max_pages: crawlOptions?.maxPages || 10,
+      follow_links: crawlOptions?.followLinks !== false
+    };
+    
+    // Crawl the website
+    const crawlResult = await crawlWebsite(request);
+    
+    if (!crawlResult.success || !crawlResult.extracted_text) {
+      throw new Error(crawlResult.error || 'Failed to extract content from the website');
+    }
+    
+    // Generate life story from the extracted text
+    return generateLifeStory(crawlResult.extracted_text);
+  } catch (error) {
+    console.error('Error generating life story from website:', error);
+    throw new Error(`Failed to generate life story from website: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }; 
