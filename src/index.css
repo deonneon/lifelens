@@ -2,27 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Keep system defaults and font settings */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@layer base {
-  body {
-    @apply bg-dark-900 text-gray-100 m-0;
-  }
-}
-
-@layer components {
-  .card {
-    @apply bg-dark-800 rounded-lg border border-dark-600 shadow-md transition-all duration-300;
-  }
-  
-  .btn-primary {
-    @apply bg-gradient-to-r from-accent-primary to-accent-secondary text-white px-6 py-3 rounded-md shadow-md hover:shadow-neon hover:-translate-y-1 transition-all duration-300;
-  }
-}

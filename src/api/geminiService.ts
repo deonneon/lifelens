@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
-import { TimelineEvent, LLMResponse } from './llmService';
+import { LLMResponse } from './llmService';
 
 // Configuration for the Gemini API
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -10,54 +10,38 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Function to generate a system prompt
 const generateSystemPrompt = () => {
-  return `You are an assistant that transforms a user's freeform text about their life into a structured biography and timeline. 
-Extract key life events with dates, titles, and brief descriptions. Format the response as a JSON object with:
-1. A "bio" field containing a concise paragraph summarizing their life
-2. A "timeline" array with objects containing "date", "title", and "description" fields
+  return `You are an assistant that transforms a user's freeform text about their life into a structured biography.
 
-Make sure each timeline event is unique - don't duplicate events that happened on the same date with the same title.
-The timeline should be chronologically ordered by date.
-Focus on extracting only new information from the input text, and create concise timeline entries from it.
+Your primary focus should be on generating a HIGHLY DETAILED and comprehensive biography. The biography should be thorough, informative, and as long as necessary to include all relevant details from the input text. Use rich, descriptive language and maintain a coherent narrative flow.
+
+Format the response as a JSON object with:
+1. A "bio" field containing a detailed, comprehensive paragraph (or paragraphs) summarizing their life. This should be the most substantial part of your response.
+
+The biography should include all meaningful information from the input, elaborating on context, motivations, achievements, and significant life details. Don't be concerned about length - longer is better if it means capturing more information.
 
 The response should be valid JSON only, with no additional text or explanation.`;
 };
 
 // Function to generate a user prompt from the input text
-const generateUserPrompt = (inputText: string, existingEvents: TimelineEvent[] = []) => {
-  let prompt = `Parse this text into a bio and timeline events: "${inputText}"`;
-  
-  // Add context about existing events if available
-  if (existingEvents.length > 0) {
-    prompt += `\n\nExisting timeline events (for reference, don't duplicate these):\n`;
-    existingEvents.forEach(event => {
-      prompt += `- ${event.date}: ${event.title} - ${event.description}\n`;
-    });
-    prompt += `\nExtract only new events from the input text that aren't already in the existing timeline.`;
-  }
-  
+const generateUserPrompt = (inputText: string) => {
+  let prompt = `Parse this text into a detailed, comprehensive biography: "${inputText}"`;
   return prompt;
 };
 
 /**
  * Calls the Gemini API to generate a life story from the input text
  * @param inputText The raw text input from the user
- * @param existingEvents Optional array of existing timeline events for context
- * @returns Promise with the LLM response containing bio and timeline
+ * @returns Promise with the LLM response containing bio
  */
 export const generateLifeStoryWithGemini = async (
-  inputText: string, 
-  existingEvents: TimelineEvent[] = []
+  inputText: string
 ): Promise<LLMResponse> => {
   try {
     // Default to mock data if API key is not available (for development)
     if (!API_KEY) {
       console.warn('No Gemini API key found, using mock data');
       return {
-        bio: "A journey that began in 1990 in Chicago, blossoming into a bakery adventure in Paris by 2015.",
-        timeline: [
-          { date: "1990", title: "Born", description: "Born in Chicago, starting a journey of creativity and exploration." },
-          { date: "2015", title: "Moved to Paris", description: "Relocated to Paris and fulfilled a lifelong dream by opening a charming bakery in Montmartre." },
-        ]
+        bio: "A journey that began in 1990 in Chicago, blossoming into a bakery adventure in Paris by 2015. The formative years in Chicago were spent exploring creative pursuits and developing a passion for baking under the guidance of a grandmother who had mastered traditional European pastry techniques. After completing culinary school in 2010 with honors, there followed a period of apprenticeship at several noted establishments, including a year at a historic bakery in Vienna that specialized in Viennoiserie. The dream of opening a personal bakery grew during these years, culminating in the bold decision to relocate to Paris in 2015. The charming bakery in Montmartre quickly became known for its fusion of American creativity and European tradition, earning recognition in local food publications and developing a loyal neighborhood following. The small establishment now serves as both a community gathering space and a laboratory for innovative pastry development."
       };
     }
 
@@ -82,10 +66,16 @@ export const generateLifeStoryWithGemini = async (
           threshold: HarmBlockThreshold.BLOCK_NONE,
         },
       ],
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.9,
+        topK: 40,
+        maxOutputTokens: 4096, // Allow for longer outputs to capture more detailed biographies
+      },
     });
 
     // Prepare the prompt
-    const prompt = `${generateSystemPrompt()}\n\n${generateUserPrompt(inputText, existingEvents)}`;
+    const prompt = `${generateSystemPrompt()}\n\n${generateUserPrompt(inputText)}`;
 
     // Generate content
     const result = await model.generateContent(prompt);
