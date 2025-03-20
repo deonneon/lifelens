@@ -61,9 +61,9 @@ const Timeline: React.FC<TimelineProps> = ({ refreshKey = 0 }) => {
       aria-label="Create new story"
       tabIndex={0}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"></line>
+        <line x1="1" y1="12" x2="23" y2="12"></line>
       </svg>
     </button>
   );
@@ -119,7 +119,7 @@ const Timeline: React.FC<TimelineProps> = ({ refreshKey = 0 }) => {
         <div className="relative">
           {events.map((event, index) => (
             <div key={index} className="border-l-2 border-accent-primary pl-6 mb-8 relative pb-2">
-              <div className="absolute left-[-5px] top-0 w-8 h-8 bg-dark-700 rounded-full border-2 border-accent-primary flex items-center justify-center shadow-neon">
+              <div className="absolute left-[-15px] top-0 w-8 h-8 bg-dark-700 rounded-full border-2 border-accent-primary flex items-center justify-center shadow-neon">
                 <span className="text-sm">{index + 1}</span>
               </div>
               <h3 className="text-lg font-bold text-gray-200">{event.date}</h3>
