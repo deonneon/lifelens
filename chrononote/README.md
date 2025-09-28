@@ -1,0 +1,90 @@
+# ChronoNote
+
+ChronoNote is a CLI tool to ingest unstructured text about a topic and have an LLM label chronological sections with dates and citations. It stores labeled data in SQLite and can export timelines to Markdown or JSON.
+
+## Capabilities
+- Extracts ordered sections with `date_iso`, `title`, `summary`, `citations`, and optional `confidence`
+- SQLite storage with `topics`, `entries`, and `sections` tables
+- Robust JSON parsing/repair for LLM output (handles code fences, trailing commas)
+- CLI workflow: initialize, add topics, ingest text, view timeline, export to `.md` or `.json`
+
+## Data Model
+- `topics`: named collections (unique `name`) with optional `description`
+- `entries`: raw text blobs you ingest for a topic
+- `sections`: structured LLM-labeled slices from an `entry`, each with `date_iso`
+
+Dates are normalized to ISO. If only a year is present, it becomes `YYYY-01-01`; if only month-year, `YYYY-MM-01`.
+
+## Installation
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+cp .env.example .env
+```
+
+Set your OpenAI API key and model in `.env`.
+
+## Usage
+
+Initialize the database (defaults to `~/.chrononote/chrononote.db`):
+
+```bash
+chrononote init
+```
+
+Create a topic:
+
+```bash
+chrononote add-topic "AI Safety" -d "Tracking milestones and key publications"
+```
+
+Ingest text (from file or stdin) and auto-label sections:
+
+```bash
+chrononote ingest "AI Safety" --file notes.txt --source "personal notes"
+# or
+cat notes.txt | chrononote ingest "AI Safety" -s "personal notes"
+```
+
+View the timeline:
+
+```bash
+chrononote timeline "AI Safety" --desc --limit 20
+```
+
+Export the timeline:
+
+```bash
+chrononote export "AI Safety" timeline.md
+chrononote export "AI Safety" timeline.json
+```
+
+## Configuration
+
+Environment variables (can be placed in `.env`):
+
+- `CHRONONOTE_DATA_DIR`: custom data dir (default: `~/.chrononote`)
+- `LLM_PROVIDER`: currently `openai`
+- `OPENAI_API_KEY`: your key
+- `OPENAI_BASE_URL`: optional custom base URL
+- `OPENAI_MODEL`: model name (default `gpt-4o-mini`)
+
+## Implementation Notes
+
+- Storage and schema in `chrononote/storage.py`
+- LLM prompt and client in `chrononote/llm.py`
+- JSON parsing and normalization in `chrononote/parser.py`
+- Exporters in `chrononote/exporter.py`
+- CLI commands in `chrononote/cli.py`
+
+## Extending
+
+- Add new LLM providers by extending `label_sections` dispatch.
+- Add richer citation schemas or validation in the parser.
+- Add importers for URLs, PDFs, or note apps.
+
+## License
+
+MIT
