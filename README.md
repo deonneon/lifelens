@@ -23,6 +23,19 @@ Sources are tiered by reliability: **T1** official records (court filings, SEC d
 
 This is how the app handles wrong news: nothing is overwritten. The SEC's "false and misleading" complaint sits directly beside Musk's "funding secured" tweet; Tim Cook's "I've never spoken to Elon" sits beside Musk's story of trying to sell Tesla to Apple. Readers see all accounts, their tiers, and their stances — and judge.
 
+## The Rumor Desk — judging a story before it resolves
+
+The point of accumulating all this cited history is to use it when a fresh, unverified story breaks (`/rumor-desk`). Paste the story and the desk assembles the judgment context live:
+
+- **Characters named** — who in the universe the story implicates
+- **Related context on file** — the most relevant prior events, ranked by shared characters and subject overlap, each with its evidence status
+- **Actor track record** — how often events involving the named actors that rest on *their own* first-hand claims ended up formally disputed (e.g. Musk's "funding secured" and the Apple story are in the ledger)
+- **Rumor base rate** — how tier-4-sourced events across the corpus actually resolved: corroborated, disputed, or still open
+- **Hardest evidence nearby** — official-record (tier 1) accounts attached to the related events, the anchors any new claim must square with
+- **What confirmation looks like** — a checklist keyed to the claim type: 8-K / SC 13D for M&A rumors, 8-K Item 5.02 for CEO-change rumors, S-1 for IPO talk, SC 13E-3 for going-private, plus independence and time-boxing checks (with a warning when the story involves a private company where no filing will ever come)
+
+Then **log the rumor**: it enters the universe as a tier-4 event on a watchlist. As confirmations or denials arrive, attach them as accounts on the event page — its status updates automatically, the watchlist shows where every open rumor stands, and each resolution sharpens the base rates the desk shows you next time. Context and signals, not verdicts: the judgment stays with you.
+
 ## Five lenses over one dataset
 
 1. **Universe** (`/`) — a constellation map of every character, connected by relationships, sized by documented activity. The entry point for "focus on the universe."

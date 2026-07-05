@@ -6,6 +6,7 @@ const tabs = [
   { to: '/timeline', label: 'Timeline' },
   { to: '/characters', label: 'Characters' },
   { to: '/sources', label: 'Sources' },
+  { to: '/rumor-desk', label: 'Rumor Desk' },
 ]
 
 export function Layout() {

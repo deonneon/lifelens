@@ -7,6 +7,7 @@ import { CharacterPage, CharactersIndexPage } from './pages/Characters'
 import { EventPage } from './pages/Event'
 import { SourcesPage } from './pages/Sources'
 import { IngestPage } from './pages/Ingest'
+import { RumorDeskPage } from './pages/RumorDesk'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/events/:id" element={<EventPage />} />
             <Route path="/sources" element={<SourcesPage />} />
             <Route path="/ingest" element={<IngestPage />} />
+            <Route path="/rumor-desk" element={<RumorDeskPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
