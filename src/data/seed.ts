@@ -1,5 +1,6 @@
 import type {
   Account,
+  Decision,
   Entity,
   PendingCharacter,
   Source,
@@ -481,6 +482,97 @@ const sources: Source[] = [
     publisher: 'Reuters',
     date: '2025-03-29',
   },
+  // ── design-decision sources ────────────────────────────────────────────
+  {
+    id: 'src-musk-steel-tweet',
+    type: 'first-hand',
+    title: '@elonmusk: “Stainless Steel” — Starship will be built from stainless steel',
+    author: 'Elon Musk',
+    publisher: 'Twitter',
+    date: '2018-12-22',
+  },
+  {
+    id: 'src-popmech-steel',
+    type: 'reporting',
+    title: 'Elon Musk: Why I’m Building the Starship out of Stainless Steel',
+    author: 'Ryan D’Agostino',
+    publisher: 'Popular Mechanics',
+    date: '2019-01-22',
+  },
+  {
+    id: 'src-autonomy-day',
+    type: 'first-hand',
+    title: 'Tesla Autonomy Day presentation — “Lidar is a fool’s errand”',
+    publisher: 'Tesla (investor webcast)',
+    date: '2019-04-22',
+  },
+  {
+    id: 'src-musk-radar-tweet',
+    type: 'first-hand',
+    title: '@elonmusk: “When radar and vision disagree, which one do you believe? Vision has much more precision”',
+    author: 'Elon Musk',
+    publisher: 'Twitter',
+    date: '2021-04-10',
+  },
+  {
+    id: 'src-tesla-vision',
+    type: 'first-hand',
+    title: 'Transitioning to Tesla Vision',
+    publisher: 'Tesla (support page)',
+    date: '2021-05',
+  },
+  {
+    id: 'src-verge-radar',
+    type: 'reporting',
+    title: 'Tesla is removing radar from Model 3 and Model Y',
+    publisher: 'The Verge',
+    date: '2021-05-25',
+  },
+  {
+    id: 'src-cr-radar',
+    type: 'reporting',
+    title: 'Radarless Teslas lose Consumer Reports Top Pick and IIHS Top Safety Pick+ designations',
+    publisher: 'Consumer Reports',
+    date: '2021-05-27',
+  },
+  {
+    id: 'src-wapo-phantom',
+    type: 'reporting',
+    title: '“Phantom braking” complaints to NHTSA surge after Tesla drops radar',
+    publisher: 'The Washington Post',
+    date: '2022-02-02',
+  },
+  {
+    id: 'src-karpathy-sw2',
+    type: 'analysis',
+    title: 'Software 2.0',
+    author: 'Andrej Karpathy',
+    publisher: 'Medium',
+    date: '2017-11-11',
+    url: 'https://karpathy.medium.com/software-2-0-a64152b37c35',
+  },
+  {
+    id: 'src-fsd-stream',
+    type: 'first-hand',
+    title: '@elonmusk live demo of FSD V12: “nothing in between but a neural net” — no line of code says stop at a stop sign',
+    author: 'Elon Musk',
+    publisher: 'X (livestream)',
+    date: '2023-08-25',
+  },
+  {
+    id: 'src-fsd-v12-report',
+    type: 'reporting',
+    title: 'Tesla begins rolling out FSD V12, shifting driving control to end-to-end neural networks',
+    publisher: 'Reuters',
+    date: '2024-01-22',
+  },
+  {
+    id: 'src-e2e-caution',
+    type: 'analysis',
+    title: 'Safety researchers question how end-to-end driving models can be validated',
+    publisher: 'IEEE Spectrum',
+    date: '2024-03',
+  },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -919,6 +1011,261 @@ event(
   ['src-reuters-x-xai', 'supports', 'Reuters noted the deal values X below Musk’s 2022 purchase price and consolidates his control.'],
 )
 
+event(
+  {
+    id: 'ev-starship-steel',
+    date: '2019-01',
+    title: 'Starship switches from carbon fiber to stainless steel',
+    summary:
+      'After tooling up for a carbon-fiber airframe, SpaceX pivots Starship to cold-rolled 301 stainless steel — Musk lays out the cryogenic-strength and cost rationale in a Popular Mechanics interview.',
+    location: 'Boca Chica, TX',
+    participants: [
+      { entityId: 'spacex', role: 'design authority' },
+      { entityId: 'elon-musk', role: 'made the call' },
+    ],
+    tags: ['space', 'design-decision', 'engineering'],
+  },
+  ['src-musk-steel-tweet', 'supports', '“Stainless Steel” — announcing the material change days after teasing it.'],
+  ['src-popmech-steel', 'supports', '“The steel is lighter than carbon fiber at cryogenic temperatures — and it’s about 2 percent of the cost.”'],
+  ['src-isaacson', 'supports', 'Isaacson recounts Musk overruling engineers who had already invested in the carbon-fiber mandrel.', 'ch. 74'],
+)
+
+event(
+  {
+    id: 'ev-tesla-vision',
+    date: '2021-05-25',
+    title: 'Tesla removes radar — camera-only “Tesla Vision” ships',
+    summary:
+      'Tesla drops radar from Model 3 and Model Y in North America, moving Autopilot to pure camera vision. Safety groups respond by pulling endorsements pending new tests.',
+    participants: [
+      { entityId: 'tesla', role: 'design authority' },
+      { entityId: 'elon-musk', role: 'championed vision-only' },
+    ],
+    tags: ['ai', 'design-decision', 'engineering'],
+  },
+  ['src-tesla-vision', 'supports', 'Tesla Vision announcement: new deliveries rely on camera vision and neural net processing.'],
+  ['src-verge-radar', 'supports', 'The Verge confirmed radar deletion for North American Model 3/Y beginning May 2021.'],
+  ['src-cr-radar', 'clarifies', 'Consumer Reports pulled its Top Pick and IIHS its Top Safety Pick+ until the radarless cars re-tested.'],
+)
+
+event(
+  {
+    id: 'ev-fsd-v12-demo',
+    date: '2023-08-25',
+    title: 'Musk livestreams FSD V12: end-to-end neural network drives',
+    summary:
+      'Musk streams a 45-minute drive on FSD V12, describing it as photons-in, controls-out — the build replaces over 300,000 lines of hand-written C++ control code with a single neural network.',
+    location: 'Palo Alto, CA',
+    participants: [
+      { entityId: 'tesla', role: 'developer' },
+      { entityId: 'elon-musk', role: 'demonstrator' },
+    ],
+    tags: ['ai', 'design-decision', 'milestone'],
+  },
+  ['src-fsd-stream', 'supports', '“There’s no line of code that says stop at a stop sign… it watched millions of videos of people stopping.”'],
+)
+
+event(
+  {
+    id: 'ev-fsd-v12-release',
+    date: '2024-01',
+    title: 'FSD V12 rolls out to customers',
+    summary:
+      'Tesla begins shipping FSD V12 to customer cars, retiring the hand-coded planner in city driving in favor of the end-to-end network.',
+    participants: [
+      { entityId: 'tesla', role: 'shipping company' },
+    ],
+    tags: ['ai', 'design-decision', 'milestone'],
+  },
+  ['src-fsd-v12-report', 'supports', 'Reuters reported the staged V12 rollout and the shift to end-to-end neural control.'],
+  ['src-e2e-caution', 'clarifies', 'Researchers note end-to-end systems can’t be audited line-by-line — failures must be argued statistically, from disengagement and incident data.'],
+)
+
+// ─────────────────────────────────────────────────────────────────────────
+// Decision threads — design choices with the history and rationale attached
+// ─────────────────────────────────────────────────────────────────────────
+
+const decisions: Decision[] = [
+  {
+    id: 'dec-starship-steel',
+    title: 'Starship airframe: carbon fiber → 301 stainless steel',
+    question:
+      'Why did SpaceX abandon carbon fiber — after buying the tooling — and build Starship out of stainless steel?',
+    domain: 'engineering',
+    from: 'Carbon-fiber composite airframe',
+    to: 'Cold-rolled 301 stainless steel',
+    decidedDate: '2018-12',
+    participants: [
+      { entityId: 'spacex', role: 'design authority' },
+      { entityId: 'elon-musk', role: 'made the call' },
+    ],
+    options: [
+      {
+        label: 'Carbon-fiber composite',
+        outcome: 'rejected',
+        note: 'Roughly $135/kg with ~35% scrap, long layup times, and it weakens at reentry temperatures.',
+        sourceIds: ['src-popmech-steel'],
+      },
+      {
+        label: 'Aluminum-lithium alloy (the Falcon 9 recipe)',
+        outcome: 'rejected',
+        note: 'Falcon’s Al-Li construction cannot take Starship’s reentry heating without far heavier shielding — aluminum loses strength well below steel’s limits.',
+        sourceIds: ['src-popmech-steel'],
+      },
+      {
+        label: '301 stainless steel',
+        outcome: 'chosen',
+        note: 'Stronger at cryogenic temperatures, usable to ~1500°F on the leeward side, and about 2% of carbon fiber’s cost.',
+        sourceIds: ['src-popmech-steel', 'src-musk-steel-tweet'],
+      },
+    ],
+    rationale: [
+      {
+        text: 'At cryogenic propellant temperatures 301 stainless gains strength — its strength-to-weight beats carbon fiber exactly where the tanks live.',
+        sourceIds: ['src-popmech-steel'],
+      },
+      {
+        text: 'Cost and speed: steel runs on the order of 2% of carbon fiber’s price per kilogram and can be welded outdoors in a tent instead of cured in autoclaves — which is what made the Boca Chica build-fast-and-blow-up cadence affordable.',
+        sourceIds: ['src-popmech-steel'],
+      },
+      {
+        text: 'Steel’s high melting point shrinks the heat-shield problem: the windward side needs tiles, but the leeward side can fly bare where composites or aluminum would need full coverage.',
+        sourceIds: ['src-popmech-steel', 'src-isaacson'],
+      },
+    ],
+    counterpoints: [
+      {
+        text: 'Steel is heavier at room temperature — the trade only closes if the cryogenic strength and heat-shield savings fully materialize in flight.',
+        sourceIds: ['src-popmech-steel'],
+      },
+      {
+        text: 'The team had already sunk money into the carbon-fiber mandrel; Isaacson describes engineers resisting the reversal before Musk overruled them.',
+        sourceIds: ['src-isaacson'],
+      },
+    ],
+    eventIds: ['ev-starship-steel'],
+    tags: ['starship', 'materials', 'space'],
+  },
+  {
+    id: 'dec-tesla-vision',
+    title: 'Autopilot sensing: radar + cameras → camera-only Tesla Vision',
+    question:
+      'Why did Tesla delete radar (and later ultrasonics) from its cars while the rest of the industry added lidar?',
+    domain: 'engineering',
+    from: 'Camera + radar sensor fusion',
+    to: 'Vision-only neural-network perception',
+    decidedDate: '2021-05',
+    participants: [
+      { entityId: 'tesla', role: 'design authority' },
+      { entityId: 'elon-musk', role: 'championed vision-only' },
+    ],
+    options: [
+      {
+        label: 'Lidar + HD maps (industry consensus)',
+        outcome: 'rejected',
+        note: '“Lidar is a fool’s errand… expensive sensors that are unnecessary.” Tesla bet the road system is designed for eyes.',
+        sourceIds: ['src-autonomy-day'],
+      },
+      {
+        label: 'Keep camera + radar fusion',
+        outcome: 'rejected',
+        note: '“When radar and vision disagree, which one do you believe?” — fusion was treated as an ambiguity problem, not a redundancy win.',
+        sourceIds: ['src-musk-radar-tweet'],
+      },
+      {
+        label: 'Pure vision',
+        outcome: 'chosen',
+        note: 'One sensor stack, one neural network to improve, trained on fleet video at scale.',
+        sourceIds: ['src-tesla-vision'],
+      },
+    ],
+    rationale: [
+      {
+        text: 'The fusion argument: when two sensors disagree the system must pick one anyway, so Tesla chose to concentrate effort on making vision unambiguous rather than arbitrating conflicts.',
+        sourceIds: ['src-musk-radar-tweet'],
+      },
+      {
+        text: 'The biological argument from Autonomy Day: roads are designed for eyes and biological neural nets, so cameras plus neural networks are sufficient in principle.',
+        sourceIds: ['src-autonomy-day'],
+      },
+      {
+        text: 'Simplification and cost: removing radar (and later ultrasonics) cut parts and supply-chain surface during the chip crunch, and put every car on the same software path.',
+        sourceIds: ['src-tesla-vision', 'src-verge-radar'],
+      },
+    ],
+    counterpoints: [
+      {
+        text: 'Consumer Reports and IIHS immediately pulled their safety designations for radarless cars pending re-tests.',
+        sourceIds: ['src-cr-radar'],
+      },
+      {
+        text: 'Complaints of “phantom braking” filed with NHTSA rose sharply in the months after radar was removed.',
+        sourceIds: ['src-wapo-phantom'],
+      },
+    ],
+    eventIds: ['ev-tesla-vision'],
+    relatedDecisionIds: ['dec-fsd-e2e'],
+    tags: ['autopilot', 'sensors', 'ai'],
+  },
+  {
+    id: 'dec-fsd-e2e',
+    title: 'FSD control stack: 300k+ lines of C++ → end-to-end neural network',
+    question:
+      'Why did Tesla throw away its hand-written driving heuristics and let a single neural network drive the car?',
+    domain: 'engineering',
+    from: 'Neural perception + ~300k lines of hand-coded C++ planning/control',
+    to: 'End-to-end neural network — photons in, controls out',
+    decidedDate: '2023-08',
+    participants: [
+      { entityId: 'tesla', role: 'design authority' },
+      { entityId: 'elon-musk', role: 'announced and demoed the pivot' },
+    ],
+    options: [
+      {
+        label: 'Keep refining the rule-based planner',
+        outcome: 'rejected',
+        note: 'Every edge case demanded another hand-written rule; the heuristic stack grew brittle as coverage widened.',
+        sourceIds: ['src-fsd-stream'],
+      },
+      {
+        label: 'Hybrid: neural perception feeding coded control (the V11 architecture)',
+        outcome: 'superseded',
+        note: 'The shipping architecture through V11 — retired for city driving when V12 landed.',
+        sourceIds: ['src-fsd-v12-report'],
+      },
+      {
+        label: 'End-to-end neural network trained on fleet video',
+        outcome: 'chosen',
+        note: '“Nothing in between but a neural net” — behavior learned from millions of clips of human driving.',
+        sourceIds: ['src-fsd-stream', 'src-fsd-v12-report'],
+      },
+    ],
+    rationale: [
+      {
+        text: 'No line of code says stop at a stop sign: V12 learned the behavior from millions of video clips, replacing over 300,000 lines of C++ control code with learned weights.',
+        sourceIds: ['src-fsd-stream'],
+      },
+      {
+        text: 'The intellectual groundwork is Karpathy’s “Software 2.0” thesis — where training data is abundant, learned networks displace explicit code because they improve with data instead of with engineering hours.',
+        sourceIds: ['src-karpathy-sw2'],
+      },
+      {
+        text: 'Fleet scale is the moat: millions of cars produce the video corpus the network trains on, an input hand-written rules cannot consume.',
+        sourceIds: ['src-fsd-stream', 'src-fsd-v12-report'],
+      },
+    ],
+    counterpoints: [
+      {
+        text: 'An end-to-end network cannot be audited line-by-line — when it fails there is no rule to point to, so safety must be argued statistically from disengagement and incident data.',
+        sourceIds: ['src-e2e-caution'],
+      },
+    ],
+    eventIds: ['ev-tesla-vision', 'ev-fsd-v12-demo', 'ev-fsd-v12-release'],
+    relatedDecisionIds: ['dec-tesla-vision'],
+    tags: ['fsd', 'neural-network', 'ai', 'software'],
+  },
+]
+
 // ─────────────────────────────────────────────────────────────────────────
 // Orbit watch — names mentioned by sources but not yet significant enough
 // (SIGNIFICANCE_THRESHOLD distinct events) to become full characters.
@@ -945,4 +1292,4 @@ const pending: PendingCharacter[] = [
   },
 ]
 
-export const SEED: UniverseState = { entities, sources, events, accounts, pending }
+export const SEED: UniverseState = { entities, sources, events, accounts, pending, decisions }

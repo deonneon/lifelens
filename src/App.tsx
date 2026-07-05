@@ -8,6 +8,7 @@ import { EventPage } from './pages/Event'
 import { SourcesPage } from './pages/Sources'
 import { IngestPage } from './pages/Ingest'
 import { RumorDeskPage } from './pages/RumorDesk'
+import { DecisionPage, DecisionsIndexPage } from './pages/Decisions'
 import { ExplainerPage } from './pages/Explainer'
 
 export default function App() {
@@ -21,6 +22,8 @@ export default function App() {
             <Route path="/characters" element={<CharactersIndexPage />} />
             <Route path="/characters/:id" element={<CharacterPage />} />
             <Route path="/events/:id" element={<EventPage />} />
+            <Route path="/decisions" element={<DecisionsIndexPage />} />
+            <Route path="/decisions/:id" element={<DecisionPage />} />
             <Route path="/sources" element={<SourcesPage />} />
             <Route path="/ingest" element={<IngestPage />} />
             <Route path="/rumor-desk" element={<RumorDeskPage />} />

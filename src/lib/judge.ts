@@ -55,7 +55,7 @@ const STOPWORDS = new Set(
     'according reportedly sources rumor rumors report reports news story breaking').split(' '),
 )
 
-function tokens(text: string): Set<string> {
+export function tokens(text: string): Set<string> {
   return new Set(
     text
       .toLowerCase()
@@ -65,7 +65,7 @@ function tokens(text: string): Set<string> {
   )
 }
 
-function matchEntities(text: string, entities: Entity[]): Entity[] {
+export function matchEntities(text: string, entities: Entity[]): Entity[] {
   const lower = text.toLowerCase()
   return entities.filter((e) =>
     [e.name, ...e.aliases].some((n) => n && lower.includes(n.toLowerCase())),

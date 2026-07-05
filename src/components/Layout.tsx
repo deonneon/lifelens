@@ -28,6 +28,11 @@ const NAV = [
     icon: <Icon d="M7.5 9a2.75 2.75 0 1 0 0-5.5A2.75 2.75 0 0 0 7.5 9Z" extra={<path d="M2.5 16.5c.4-3 2.4-4.5 5-4.5s4.6 1.5 5 4.5M13.5 8.8a2.4 2.4 0 1 0-1.2-4.5M14.6 12.3c1.8.4 2.7 1.7 2.9 3.7" />} />,
   },
   {
+    to: '/decisions',
+    label: 'Decisions',
+    icon: <Icon d="M3.5 10h5" extra={<><path d="M8.5 10c3 0 3-5 6-5h2M8.5 10c3 0 3 5 6 5h2" /><path d="M14.5 3.5 17 5l-2.5 1.5M14.5 13.5 17 15l-2.5 1.5" /></>} />,
+  },
+  {
     to: '/sources',
     label: 'Sources',
     icon: <Icon d="M4 3.5h8.5a2 2 0 0 1 2 2v11H6a2 2 0 0 1-2-2v-11Z" extra={<path d="M14.5 13.5H6a2 2 0 0 0-2 2M7 7h5M7 10h4" />} />,

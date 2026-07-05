@@ -45,13 +45,22 @@ The companion use case (`/explainer`): a story is out and everyone is reacting t
 
 You curate before you copy: toggle which characters get background sections and which precedent events make the cut. Supports `?q=` prefill for shareable drafts.
 
-## Five lenses over one dataset
+## The Decision Desk — the history behind a design choice
+
+Design pivots are first-class threads (`/decisions`), not just events: when Tesla rewrote FSD from ~300k lines of hand-coded C++ into an end-to-end neural network, or SpaceX abandoned carbon fiber (and the aluminum-lithium recipe that flies on Falcon 9) for Starship's stainless steel, the interesting object is the *choice* — what was replaced, what replaced it, the options weighed, and why.
+
+A **decision thread** records exactly that: `from → to`, the rejected/superseded alternatives with cited notes, rationale and counterpoint paragraphs with per-sentence `[n]` citations, and the events around the pivot attached as a chronological thread. Each thread carries a **rationale grade** (the strongest source tier backing the "why", plus distinct source count) so you can see at a glance whether an explanation rests on reporting or on the actor's own retelling.
+
+**Ask on command**: type a question — "why did Starship switch to stainless steel?" — and the desk pulls the matching dossier(s). Matching requires overlap on *subject* words (character names and "why did…" scaffolding don't count), so a question the ledger can't actually answer isn't faked: it returns a **research brief** instead — the characters detected, the adjacent history already on file, and a concrete list of what to seek (design presentations, earnings-call Q&A, patent filings, independent teardowns). Ingest what you find and start the thread; three seeded threads (FSD end-to-end, Tesla Vision radar removal, Starship steel) show the destination.
+
+## Six lenses over one dataset
 
 1. **Universe** (`/`) — a constellation map of every character, connected by relationships, sized by documented activity. The entry point for "focus on the universe."
 2. **Timeline** (`/timeline`) — the master chronology. Filter by character, evidence status, source type, or text to pinpoint any activity by any character.
 3. **Characters** (`/characters/:id`) — wiki-style dossiers with per-sentence citation superscripts, footnotes, relationships, and the character's full event history.
 4. **Events** (`/events/:id`) — the evidence record: all accounts grouped by stance with tier badges, quotes and locators, an explanation of the derived status, and a form to attach new supporting/disputing/clarifying accounts.
-5. **Sources** (`/sources`) — the library everything traces back to, sorted by tier, each expandable to the events it testifies about.
+5. **Decisions** (`/decisions/:id`) — design-choice dossiers: from → to, options weighed, cited rationale and counterpoints, and the event thread around the pivot.
+6. **Sources** (`/sources`) — the library everything traces back to, sorted by tier, each expandable to the events it testifies about.
 
 ## Additive ingestion
 
@@ -63,7 +72,7 @@ Extraction also spots **unknown names**, but a mention is not a character. New n
 
 ## Seed data
 
-The app ships with a curated, genuinely-cited seed: ~25 real events across 14 characters and ~26 real sources (Vance's and Isaacson's biographies, the Tesla incorporation certificate, *Eberhard v. Musk*, the SEC complaint and settlement, NASA awards, Reuters reporting, Musk's own posts…). It includes real disputes — the Tesla founder fight, "funding secured," and the Apple acquisition story — so the dispute machinery is visible out of the box. Your additions persist in `localStorage`; a footer button resets to seed.
+The app ships with a curated, genuinely-cited seed: ~29 real events across 14 characters, ~38 real sources (Vance's and Isaacson's biographies, the Tesla incorporation certificate, *Eberhard v. Musk*, the SEC complaint and settlement, NASA awards, Reuters reporting, the Popular Mechanics stainless-steel interview, Musk's own posts…), and 3 decision threads. It includes real disputes — the Tesla founder fight, "funding secured," and the Apple acquisition story — so the dispute machinery is visible out of the box. Your additions persist in `localStorage`; a footer button resets to seed.
 
 ## Running it
 

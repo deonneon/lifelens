@@ -156,6 +156,10 @@ A compact per-year stacked bar strip above the timeline — **magnitude over tim
 
 Headline numbers (related-context count, rumor base rate) are **stat tiles**, not charts: eyebrow label, Fraunces numeral, status-dot breakdown lines underneath. No axes where a single number is the message.
 
+### 5.4 From → To pivot chips (Decision Desk)
+
+A design decision's core fact is a replacement, so it gets a dedicated mark: the prior approach in a **neutral chip** (`surface-2` + `edge` ring, `ink-400` text), a mono accent arrow, and the chosen approach in an **accent chip** (`accent/15` fill, `accent/40` ring, `ink-100` text). Visual weight lands on where the design *went*; the past stays legible but recessive. Option outcomes reuse semantic colors with labels: Chosen = `status-good` badge, Rejected = neutral, Superseded = `status-warn` — never color alone. Each thread also carries a mono **rationale grade** (`T2 · Researched · 4 src`) so the evidence strength of the "why" reads before the prose does.
+
 ---
 
 ## 6. Accessibility
@@ -181,5 +185,6 @@ Headline numbers (related-context count, rumor base rate) are **stat tiles**, no
 | Status/stance/tier semantic classes | `src/lib/evidence.ts` (`STATUS_META`, `STANCE_META`) |
 | Universe map | `src/pages/Universe.tsx` |
 | Density strip | `src/pages/Timeline.tsx` |
+| From→To pivot chips, outcome badges, decision dossier | `src/pages/Decisions.tsx` |
 
 **Extending the system:** new surfaces come from the four-step ramp (never new grays); new text styles come from the ink scale; any new *state* gets a labeled badge built from an existing semantic color — if it isn't one of good/info/bad/warn semantics, it isn't colored.

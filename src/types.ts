@@ -103,10 +103,48 @@ export interface PendingCharacter {
   dismissed?: boolean
 }
 
+/** How one considered option fared in a decision. */
+export type DecisionOutcome = 'chosen' | 'rejected' | 'superseded'
+
+export interface DecisionOption {
+  label: string
+  outcome: DecisionOutcome
+  note?: string
+  sourceIds?: string[]
+}
+
+/**
+ * A design/strategy choice threaded through the universe: what was replaced,
+ * what replaced it, the options weighed, and the rationale — every claim
+ * cited. Decisions link the events around the pivot so the full history can
+ * be pulled on command.
+ */
+export interface Decision {
+  id: string
+  /** e.g. "Starship airframe: carbon fiber → 301 stainless steel" */
+  title: string
+  /** The question the dossier answers. */
+  question: string
+  /** engineering | strategy | product | … (free-form tag) */
+  domain: string
+  from: string
+  to: string
+  /** Same precision rules as event dates. */
+  decidedDate: string
+  participants: Participant[]
+  options: DecisionOption[]
+  rationale: CitedSegment[]
+  counterpoints: CitedSegment[]
+  eventIds: string[]
+  relatedDecisionIds?: string[]
+  tags: string[]
+}
+
 export interface UniverseState {
   entities: Entity[]
   sources: Source[]
   events: UniverseEvent[]
   accounts: Account[]
   pending: PendingCharacter[]
+  decisions: Decision[]
 }
