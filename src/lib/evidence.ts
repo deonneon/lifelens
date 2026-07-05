@@ -67,34 +67,34 @@ export const STATUS_META: Record<
 > = {
   corroborated: {
     label: 'Corroborated',
-    dot: 'bg-emerald-400',
-    badge: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/30',
+    dot: 'bg-status-good',
+    badge: 'bg-status-good/10 text-status-good ring-status-good/30',
     blurb: 'Backed by an official record, or by at least two independent non-rumor sources',
   },
   'single-source': {
     label: 'Single source',
-    dot: 'bg-sky-400',
-    badge: 'bg-sky-500/15 text-sky-300 ring-sky-400/30',
+    dot: 'bg-status-info',
+    badge: 'bg-status-info/10 text-status-info ring-status-info/30',
     blurb: 'Only one non-rumor source so far — more accounts welcome',
   },
   disputed: {
     label: 'Disputed',
-    dot: 'bg-rose-400',
-    badge: 'bg-rose-500/15 text-rose-300 ring-rose-400/30',
+    dot: 'bg-status-bad',
+    badge: 'bg-status-bad/10 text-status-bad ring-status-bad/30',
     blurb: 'At least one account challenges this event as described',
   },
   rumor: {
     label: 'Rumor',
-    dot: 'bg-amber-400',
-    badge: 'bg-amber-500/15 text-amber-300 ring-amber-400/30',
+    dot: 'bg-status-warn',
+    badge: 'bg-status-warn/10 text-status-warn ring-status-warn/30',
     blurb: 'Supported only by unverified sources',
   },
 }
 
 export const STANCE_META: Record<Stance, { label: string; badge: string }> = {
-  supports: { label: 'Supports', badge: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/30' },
-  disputes: { label: 'Disputes', badge: 'bg-rose-500/15 text-rose-300 ring-rose-400/30' },
-  clarifies: { label: 'Clarifies', badge: 'bg-indigo-500/15 text-indigo-300 ring-indigo-400/30' },
+  supports: { label: 'Supports', badge: 'bg-status-good/10 text-status-good ring-status-good/30' },
+  disputes: { label: 'Disputes', badge: 'bg-status-bad/10 text-status-bad ring-status-bad/30' },
+  clarifies: { label: 'Clarifies', badge: 'bg-accent/10 text-accent-bright ring-accent/30' },
 }
 
 export function sourceTier(source: Source): 1 | 2 | 3 | 4 {

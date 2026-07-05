@@ -21,11 +21,11 @@ export function CiteMarks({
         const n = numbers.get(id)
         if (!source || !n) return null
         return (
-          <span key={id} className="group relative mr-0.5 cursor-help text-[10px] font-semibold text-sky-400">
+          <span key={id} className="group relative mr-0.5 cursor-help text-[10px] font-semibold text-accent-bright">
             [{n}]
-            <span className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 hidden w-72 -translate-x-1/2 rounded-lg border border-white/10 bg-slate-900/95 p-3 text-left shadow-xl backdrop-blur group-hover:block">
-              <span className="block text-xs font-semibold normal-case text-slate-100">{source.title}</span>
-              <span className="mt-1 block text-[11px] font-normal text-slate-400">
+            <span className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 hidden w-72 -translate-x-1/2 rounded-lg border border-edge bg-surface-2/95 p-3 text-left shadow-xl backdrop-blur group-hover:block">
+              <span className="block text-xs font-semibold normal-case text-ink-100">{source.title}</span>
+              <span className="mt-1 block text-[11px] font-normal text-ink-400">
                 {SOURCE_TYPE_META[source.type].label}
                 {source.author ? ` · ${source.author}` : ''}
                 {source.publisher ? ` · ${source.publisher}` : ''}
@@ -49,16 +49,16 @@ export function FootnoteList({
 }) {
   if (orderedSourceIds.length === 0) return null
   return (
-    <ol className="mt-4 space-y-1.5 border-t border-white/10 pt-4 text-xs text-slate-400">
+    <ol className="mt-4 space-y-1.5 border-t border-edge pt-4 text-xs text-ink-400">
       {orderedSourceIds.map((id, i) => {
         const source = sourceById.get(id)
         if (!source) return null
         return (
           <li key={id} className="flex gap-2">
-            <span className="font-semibold text-sky-400">[{i + 1}]</span>
+            <span className="font-semibold text-accent-bright">[{i + 1}]</span>
             <span>
               {source.title}
-              <span className="text-slate-500">
+              <span className="text-ink-500">
                 {' — '}
                 {SOURCE_TYPE_META[source.type].label}
                 {source.publisher ? `, ${source.publisher}` : ''}
@@ -67,7 +67,7 @@ export function FootnoteList({
               {source.url && (
                 <>
                   {' '}
-                  <a href={source.url} target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">
+                  <a href={source.url} target="_blank" rel="noreferrer" className="text-accent-bright hover:underline">
                     link ↗
                   </a>
                 </>

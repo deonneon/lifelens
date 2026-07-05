@@ -22,6 +22,8 @@ interface ReviewRow extends Omit<CandidateEvent, 'newEntities'> {
   newEntities: ReviewNewEntity[]
 }
 
+const cleanQuote = (q: string) => q.replace(/^[“”"']+/, '').replace(/[“”"']+$/, '')
+
 export function IngestPage() {
   const { state, addSource, addEvent, addAccount, recordMentions } = useUniverse()
   const navigate = useNavigate()
@@ -127,33 +129,34 @@ export function IngestPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="font-serif text-3xl font-bold text-white">Ingest a source</h1>
-      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+      <div className="eyebrow">Additive ingestion</div>
+      <h1 className="page-title">Ingest a source</h1>
+      <p className="lede">
         Paste an excerpt from any source — a biography chapter, an SEC filing, a news story, even a
         rumor. LifeLens proposes events from it; you review each one and either{' '}
-        <span className="text-slate-200">merge it into an existing event</span> (as a supporting,
-        disputing, or clarifying account) or <span className="text-slate-200">create a new event</span>.
+        <span className="text-ink-100">merge it into an existing event</span> (as a supporting,
+        disputing, or clarifying account) or <span className="text-ink-100">create a new event</span>.
         Nothing is ever overwritten — the universe only grows.
       </p>
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-5">
-        <h2 className="text-sm font-semibold text-slate-200">1 · Describe the source</h2>
+      <section className="mt-6 card p-5">
+        <h2 className="text-sm font-semibold text-ink-100">1 · Describe the source</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <label className="block text-xs text-slate-400 sm:col-span-2">
+          <label className="block text-xs text-ink-400 sm:col-span-2">
             Title *
             <input
               value={meta.title}
               onChange={(e) => setMeta({ ...meta, title: e.target.value })}
               placeholder="e.g. Power Play: Tesla, Elon Musk, and the Bet of the Century — ch. 12"
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             />
           </label>
-          <label className="block text-xs text-slate-400">
+          <label className="block text-xs text-ink-400">
             Kind of source
             <select
               value={meta.type}
               onChange={(e) => setMeta({ ...meta, type: e.target.value as SourceType })}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             >
               {(Object.keys(SOURCE_TYPE_META) as SourceType[]).map((t) => (
                 <option key={t} value={t}>
@@ -162,61 +165,61 @@ export function IngestPage() {
               ))}
             </select>
           </label>
-          <label className="block text-xs text-slate-400">
+          <label className="block text-xs text-ink-400">
             Publication date
             <input
               type="date"
               value={meta.date}
               onChange={(e) => setMeta({ ...meta, date: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             />
           </label>
-          <label className="block text-xs text-slate-400">
+          <label className="block text-xs text-ink-400">
             Author
             <input
               value={meta.author}
               onChange={(e) => setMeta({ ...meta, author: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             />
           </label>
-          <label className="block text-xs text-slate-400">
+          <label className="block text-xs text-ink-400">
             Publisher / outlet
             <input
               value={meta.publisher}
               onChange={(e) => setMeta({ ...meta, publisher: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             />
           </label>
-          <label className="block text-xs text-slate-400 sm:col-span-2">
+          <label className="block text-xs text-ink-400 sm:col-span-2">
             URL
             <input
               value={meta.url}
               onChange={(e) => setMeta({ ...meta, url: e.target.value })}
               placeholder="https://…"
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+              className="mt-1 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm text-ink-100 outline-none focus:border-accent/60"
             />
           </label>
         </div>
       </section>
 
-      <section className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-5">
-        <h2 className="text-sm font-semibold text-slate-200">2 · Paste the text</h2>
+      <section className="mt-4 card p-5">
+        <h2 className="text-sm font-semibold text-ink-100">2 · Paste the text</h2>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder="In October 2008 Musk took over as CEO of Tesla, and by December 24 the company closed a rescue round hours before insolvency…"
-          className="mt-3 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm leading-relaxed text-slate-100 outline-none focus:border-accent-primary/60"
+          className="mt-3 w-full rounded-lg border border-edge bg-surface-2 px-3 py-2 text-sm leading-relaxed text-ink-100 outline-none focus:border-accent/60"
         />
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <button
             onClick={runExtraction}
             disabled={!metaValid || text.trim().length < 30 || busy}
-            className="rounded-full bg-accent-primary/90 px-5 py-2 text-sm font-semibold text-white transition enabled:hover:bg-accent-primary disabled:opacity-40"
+            className="rounded-full bg-accent/90 px-5 py-2 text-sm font-semibold text-ink-50 transition enabled:hover:bg-accent disabled:opacity-40"
           >
             {busy ? 'Extracting…' : 'Extract events'}
           </button>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-ink-500">
             Uses your LLM key if configured (Gemini or OpenAI); otherwise a built-in
             date-and-name matcher.
           </span>
@@ -224,15 +227,15 @@ export function IngestPage() {
       </section>
 
       {rows && (
-        <section className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-5">
-          <h2 className="text-sm font-semibold text-slate-200">
+        <section className="mt-4 card p-5">
+          <h2 className="text-sm font-semibold text-ink-100">
             3 · Review {rows.length} proposed event{rows.length === 1 ? '' : 's'}
-            <span className="ml-2 rounded-full bg-white/5 px-2 py-0.5 text-[11px] font-normal text-slate-400 ring-1 ring-inset ring-white/10">
+            <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-normal text-ink-400 ring-1 ring-inset ring-edge">
               extracted via {method}
             </span>
           </h2>
           {rows.length === 0 && (
-            <p className="mt-3 text-sm text-slate-400">
+            <p className="mt-3 text-sm text-ink-400">
               Nothing dateable found. The built-in matcher needs sentences containing a date and a
               known character — or configure an LLM key in <code>.env</code> for smarter extraction.
             </p>
@@ -242,32 +245,32 @@ export function IngestPage() {
               <div
                 key={i}
                 className={`rounded-xl border p-4 transition ${
-                  row.include ? 'border-white/15 bg-slate-900/50' : 'border-white/5 opacity-50'
+                  row.include ? 'border-edge bg-surface-2/50' : 'border-edge opacity-50'
                 }`}
               >
                 <div className="flex flex-wrap items-start gap-3">
-                  <label className="flex items-center gap-2 text-xs text-slate-300">
+                  <label className="flex items-center gap-2 text-xs text-ink-300">
                     <input
                       type="checkbox"
                       checked={row.include}
                       onChange={(e) => updateRow(i, { include: e.target.checked })}
-                      className="h-4 w-4 accent-violet-500"
+                      className="h-4 w-4 accent-accent"
                     />
                     include
                   </label>
                   <input
                     value={row.date}
                     onChange={(e) => updateRow(i, { date: e.target.value })}
-                    className="w-28 rounded-lg border border-white/10 bg-slate-900 px-2 py-1 font-mono text-xs text-slate-100 outline-none focus:border-accent-primary/60"
+                    className="w-28 rounded-lg border border-edge bg-surface-2 px-2 py-1 font-mono text-xs text-ink-100 outline-none focus:border-accent/60"
                   />
                   <input
                     value={row.title}
                     onChange={(e) => updateRow(i, { title: e.target.value })}
-                    className="min-w-48 flex-1 rounded-lg border border-white/10 bg-slate-900 px-2 py-1 text-sm text-slate-100 outline-none focus:border-accent-primary/60"
+                    className="min-w-48 flex-1 rounded-lg border border-edge bg-surface-2 px-2 py-1 text-sm text-ink-100 outline-none focus:border-accent/60"
                   />
                 </div>
-                <blockquote className="mt-2 border-l-2 border-white/15 pl-3 text-xs italic text-slate-400">
-                  “{row.quote}”
+                <blockquote className="mt-2 border-l-2 border-edge pl-3 text-xs italic text-ink-400">
+                  “{cleanQuote(row.quote)}”
                 </blockquote>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {state.entities.map((e) => {
@@ -284,8 +287,8 @@ export function IngestPage() {
                         }
                         className={`rounded-full px-2.5 py-0.5 text-[11px] ring-1 ring-inset transition ${
                           on
-                            ? 'bg-accent-primary/25 text-white ring-accent-primary/60'
-                            : 'bg-white/5 text-slate-500 ring-white/10 hover:text-slate-300'
+                            ? 'bg-accent/25 text-ink-50 ring-accent/60'
+                            : 'bg-surface-2 text-ink-500 ring-edge hover:text-ink-300'
                         }`}
                       >
                         {e.name}
@@ -295,12 +298,12 @@ export function IngestPage() {
                 </div>
                 {row.newEntities.length > 0 && (
                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-[11px] text-ink-500">
                       Unknown names — tracked as mentions, promoted to characters only after{' '}
                       {SIGNIFICANCE_THRESHOLD} events:
                     </span>
                     {row.newEntities.map((n, k) => (
-                      <span key={n.name} className="inline-flex overflow-hidden rounded-full ring-1 ring-inset ring-white/10">
+                      <span key={n.name} className="inline-flex overflow-hidden rounded-full ring-1 ring-inset ring-edge">
                         <button
                           onClick={() =>
                             updateRow(i, {
@@ -311,8 +314,8 @@ export function IngestPage() {
                           }
                           className={`px-2.5 py-0.5 text-[11px] transition ${
                             n.track
-                              ? 'bg-amber-500/20 text-amber-200'
-                              : 'bg-white/5 text-slate-500 line-through'
+                              ? 'bg-status-warn/15 text-status-warn'
+                              : 'bg-surface-2 text-ink-500 line-through'
                           }`}
                           title={n.track ? 'Will be tracked on the orbit watch' : 'Ignored'}
                         >
@@ -328,7 +331,7 @@ export function IngestPage() {
                               ),
                             })
                           }
-                          className="bg-white/5 px-1.5 py-0.5 text-[11px] text-slate-400 transition hover:text-white"
+                          className="bg-surface-2 px-1.5 py-0.5 text-[11px] text-ink-400 transition hover:text-ink-50"
                           title="Toggle person / company"
                         >
                           {n.kind === 'person' ? '●' : '■'}
@@ -337,11 +340,11 @@ export function IngestPage() {
                     ))}
                   </div>
                 )}
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-400">
                   <select
                     value={row.mergeInto}
                     onChange={(e) => updateRow(i, { mergeInto: e.target.value })}
-                    className="max-w-md rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-xs text-slate-100 outline-none focus:border-accent-primary/60"
+                    className="max-w-md rounded-lg border border-edge bg-surface-2 px-2 py-1.5 text-xs text-ink-100 outline-none focus:border-accent/60"
                   >
                     <option value="">➕ Create as a new event</option>
                     {suggestions(row).map((ev) => (
@@ -354,7 +357,7 @@ export function IngestPage() {
                     <select
                       value={row.stance}
                       onChange={(e) => updateRow(i, { stance: e.target.value as Stance })}
-                      className="rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-xs text-slate-100 outline-none focus:border-accent-primary/60"
+                      className="rounded-lg border border-edge bg-surface-2 px-2 py-1.5 text-xs text-ink-100 outline-none focus:border-accent/60"
                     >
                       <option value="supports">supports it</option>
                       <option value="disputes">disputes it</option>
@@ -368,7 +371,7 @@ export function IngestPage() {
           {rows.some((r) => r.include) && (
             <button
               onClick={commit}
-              className="mt-5 rounded-full bg-emerald-500/90 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
+              className="mt-5 rounded-full bg-status-good px-5 py-2 text-sm font-semibold text-ink-50 transition hover:bg-status-good/85"
             >
               Commit {rows.filter((r) => r.include).length} to the universe
             </button>
@@ -376,9 +379,9 @@ export function IngestPage() {
         </section>
       )}
 
-      <p className="mt-6 text-xs text-slate-500">
+      <p className="mt-6 text-xs text-ink-500">
         Prefer to attach testimony to a specific event directly? Open it from the{' '}
-        <Link to="/timeline" className="text-sky-400 hover:underline">timeline</Link> and use “Add an account”.
+        <Link to="/timeline" className="text-accent-bright hover:underline">timeline</Link> and use “Add an account”.
       </p>
     </div>
   )
