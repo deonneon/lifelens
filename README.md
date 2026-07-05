@@ -36,6 +36,15 @@ The point of accumulating all this cited history is to use it when a fresh, unve
 
 Then **log the rumor**: it enters the universe as a tier-4 event on a watchlist. As confirmations or denials arrive, attach them as accounts on the event page — its status updates automatically, the watchlist shows where every open rumor stands, and each resolution sharpens the base rates the desk shows you next time. Context and signals, not verdicts: the judgment stays with you.
 
+## The Explainer Studio — publish the context
+
+The companion use case (`/explainer`): a story is out and everyone is reacting to the headline. Paste it and the studio composes an educational deep-dive **from the evidence ledger itself** — no generation, pure assembly, so every sentence is traceable:
+
+- **Cited article** (markdown): the players' cited bios, the relevant history in chronological order with `[n]` citations and evidence-status labels, a "Contested ground" section quoting *both sides* of any disputed event, actor track records, and a numbered source list.
+- **X/Twitter thread**: the same material chunked into numbered ≤280-character posts — hook, players, one receipt-bearing post per event (`(src: …)`), ⚠️ dispute flags with the counter-quote, and a closing sources post. Character counts shown; copy the whole thread with one click.
+
+You curate before you copy: toggle which characters get background sections and which precedent events make the cut. Supports `?q=` prefill for shareable drafts.
+
 ## Five lenses over one dataset
 
 1. **Universe** (`/`) — a constellation map of every character, connected by relationships, sized by documented activity. The entry point for "focus on the universe."

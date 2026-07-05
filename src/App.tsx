@@ -8,6 +8,7 @@ import { EventPage } from './pages/Event'
 import { SourcesPage } from './pages/Sources'
 import { IngestPage } from './pages/Ingest'
 import { RumorDeskPage } from './pages/RumorDesk'
+import { ExplainerPage } from './pages/Explainer'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/sources" element={<SourcesPage />} />
             <Route path="/ingest" element={<IngestPage />} />
             <Route path="/rumor-desk" element={<RumorDeskPage />} />
+            <Route path="/explainer" element={<ExplainerPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
