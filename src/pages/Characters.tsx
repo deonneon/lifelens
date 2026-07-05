@@ -1,14 +1,16 @@
 import { Link, useParams } from 'react-router-dom'
 import { useUniverse } from '../lib/store'
-import { eventsForEntity, sourceMap } from '../lib/evidence'
+import { eventsForEntity, formatDate, sourceMap } from '../lib/evidence'
+import { SIGNIFICANCE_THRESHOLD } from '../lib/mentions'
 import { CiteMarks, FootnoteList, buildCitationIndex } from '../components/Citations'
 import { EventCard } from '../components/EventCard'
 import { EntityChip } from '../components/badges'
 
 export function CharactersIndexPage() {
-  const { state } = useUniverse()
+  const { state, promotePending, dismissPending } = useUniverse()
   const people = state.entities.filter((e) => e.kind === 'person')
   const companies = state.entities.filter((e) => e.kind === 'company')
+  const watching = state.pending.filter((p) => !p.dismissed)
 
   const card = (id: string, name: string, origin: string | undefined, kind: string, count: number) => (
     <Link
@@ -35,6 +37,74 @@ export function CharactersIndexPage() {
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {companies.map((e) => card(e.id, e.name, e.origin, 'company', eventsForEntity(state, e.id).length))}
       </div>
+
+      <section id="orbit-watch" className="mt-12">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-300">
+          ◌ Orbit watch — {watching.length} pending
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+          Names that sources mention but that haven’t yet earned a place in the universe. A name is
+          promoted to a full character automatically once it appears in{' '}
+          <span className="text-slate-200">{SIGNIFICANCE_THRESHOLD} distinct documented events</span>{' '}
+          — or immediately, if your judgment says it already matters. Everything else stays here so
+          the universe doesn’t fill with walk-on parts.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {watching.map((p) => {
+            const eventIds = [...new Set(p.mentions.map((m) => m.eventId))]
+            return (
+              <div key={p.id} className="rounded-xl border border-amber-400/20 bg-amber-500/[0.04] p-4">
+                <div className="flex items-center gap-2">
+                  <span className={p.kindGuess === 'person' ? 'text-violet-300' : 'text-sky-300'}>
+                    {p.kindGuess === 'person' ? '●' : '■'}
+                  </span>
+                  <span className="font-serif text-base font-semibold text-slate-100">{p.name}</span>
+                  <span className="ml-auto font-mono text-xs text-amber-300">
+                    {eventIds.length} / {SIGNIFICANCE_THRESHOLD} events
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-amber-400/70"
+                    style={{ width: `${Math.min(100, (eventIds.length / SIGNIFICANCE_THRESHOLD) * 100)}%` }}
+                  />
+                </div>
+                <ul className="mt-3 space-y-1 text-xs text-slate-400">
+                  {eventIds.map((id) => {
+                    const ev = state.events.find((e) => e.id === id)
+                    return ev ? (
+                      <li key={id}>
+                        <Link to={`/events/${id}`} className="hover:text-slate-200 hover:underline">
+                          {formatDate(ev.date)} — {ev.title}
+                        </Link>
+                      </li>
+                    ) : null
+                  })}
+                </ul>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    onClick={() => promotePending(p.id)}
+                    className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-200 ring-1 ring-inset ring-amber-400/40 transition hover:bg-amber-500/30"
+                  >
+                    Promote now
+                  </button>
+                  <button
+                    onClick={() => dismissPending(p.id)}
+                    className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400 transition hover:border-white/25 hover:text-slate-200"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+          {watching.length === 0 && (
+            <p className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-sm text-slate-500 sm:col-span-2">
+              Nothing on the watch list — unknown names detected during ingestion will appear here.
+            </p>
+          )}
+        </div>
+      </section>
     </div>
   )
 }

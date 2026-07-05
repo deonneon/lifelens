@@ -83,9 +83,30 @@ export interface UniverseEvent {
 
 export type EventStatus = 'corroborated' | 'single-source' | 'disputed' | 'rumor'
 
+/** One sighting of a not-yet-promoted name: which event, backed by which source. */
+export interface PendingMention {
+  eventId: string
+  sourceId: string
+}
+
+/**
+ * A name detected during ingestion that is NOT yet a character. Names only
+ * become characters when they prove significant to the story — enough
+ * distinct documented events (see SIGNIFICANCE_THRESHOLD) or a manual
+ * promotion. Until then they wait here, accumulating mentions.
+ */
+export interface PendingCharacter {
+  id: string
+  name: string
+  kindGuess: EntityKind
+  mentions: PendingMention[]
+  dismissed?: boolean
+}
+
 export interface UniverseState {
   entities: Entity[]
   sources: Source[]
   events: UniverseEvent[]
   accounts: Account[]
+  pending: PendingCharacter[]
 }

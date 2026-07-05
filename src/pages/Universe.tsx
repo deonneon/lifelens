@@ -85,6 +85,14 @@ export function UniversePage() {
               {statusCounts[s]} {STATUS_META[s].label.toLowerCase()}
             </Link>
           ))}
+          {state.pending.filter((p) => !p.dismissed).length > 0 && (
+            <Link
+              to="/characters#orbit-watch"
+              className="flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-amber-300 ring-1 ring-inset ring-amber-400/30 transition hover:bg-amber-500/20"
+            >
+              ◌ {state.pending.filter((p) => !p.dismissed).length} on orbit watch
+            </Link>
+          )}
         </div>
       </div>
 

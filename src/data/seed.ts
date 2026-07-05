@@ -1,4 +1,12 @@
-import type { Account, Entity, Source, Stance, UniverseEvent, UniverseState } from '../types'
+import type {
+  Account,
+  Entity,
+  PendingCharacter,
+  Source,
+  Stance,
+  UniverseEvent,
+  UniverseState,
+} from '../types'
 
 // ─────────────────────────────────────────────────────────────────────────
 // Characters
@@ -911,4 +919,30 @@ event(
   ['src-reuters-x-xai', 'supports', 'Reuters noted the deal values X below Musk’s 2022 purchase price and consolidates his control.'],
 )
 
-export const SEED: UniverseState = { entities, sources, events, accounts }
+// ─────────────────────────────────────────────────────────────────────────
+// Orbit watch — names mentioned by sources but not yet significant enough
+// (SIGNIFICANCE_THRESHOLD distinct events) to become full characters.
+// ─────────────────────────────────────────────────────────────────────────
+
+const pending: PendingCharacter[] = [
+  {
+    id: 'peter-thiel',
+    name: 'Peter Thiel',
+    kindGuess: 'person',
+    mentions: [
+      { eventId: 'ev-musk-ousted-xcom', sourceId: 'src-vance' },
+      { eventId: 'ev-paypal-ebay', sourceId: 'src-isaacson' },
+    ],
+  },
+  {
+    id: 'kimbal-musk',
+    name: 'Kimbal Musk',
+    kindGuess: 'person',
+    mentions: [
+      { eventId: 'ev-zip2-founded', sourceId: 'src-vance' },
+      { eventId: 'ev-zip2-sale', sourceId: 'src-isaacson' },
+    ],
+  },
+]
+
+export const SEED: UniverseState = { entities, sources, events, accounts, pending }

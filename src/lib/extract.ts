@@ -1,4 +1,10 @@
-import type { Entity } from '../types'
+import type { Entity, EntityKind } from '../types'
+
+/** An unknown name spotted in the text — a *potential* character, pending significance. */
+export interface DetectedName {
+  name: string
+  kind: EntityKind
+}
 
 /** A machine-proposed event awaiting human review in the ingest flow. */
 export interface CandidateEvent {
@@ -7,6 +13,7 @@ export interface CandidateEvent {
   summary: string
   quote: string
   entityIds: string[]
+  newEntities: DetectedName[]
 }
 
 export interface ExtractionResult {
@@ -45,6 +52,37 @@ function findDate(sentence: string): string | null {
   return null
 }
 
+const COMPANY_SUFFIX =
+  /(Inc|Corp|Corporation|Motors|Technologies|Industries|Capital|Fund|Ventures|Bank|Group|Labs?)\.?$/
+
+const NAME_STOPLIST = new Set(
+  [
+    'South Africa', 'United States', 'New York', 'Wall Street', 'Silicon Valley',
+    'Santa Monica', 'El Segundo', 'Palo Alto', 'San Francisco', 'San Carlos',
+    'Los Angeles', 'Christmas Eve', 'Cape Canaveral', 'Kwajalein Atoll',
+    'Model S', 'Model X', 'Model Y', 'Series A', 'Series B', 'Falcon Heavy',
+  ].map((s) => s.toLowerCase()),
+)
+
+/** Spot capitalized multi-word names that aren't in the roster — candidate characters. */
+function detectNewNames(sentence: string, entities: Entity[]): DetectedName[] {
+  const known = new Set(
+    entities.flatMap((e) => [e.name, ...e.aliases]).map((n) => n.toLowerCase()),
+  )
+  const matches = sentence.match(/\b[A-Z][A-Za-z&'.]+(?:\s+[A-Z][A-Za-z&'.]+)+\b/g) ?? []
+  const out: DetectedName[] = []
+  const seen = new Set<string>()
+  for (const raw of matches) {
+    const name = raw.trim()
+    const lower = name.toLowerCase()
+    if (seen.has(lower) || known.has(lower) || NAME_STOPLIST.has(lower)) continue
+    if ([...known].some((k) => lower.includes(k) || k.includes(lower))) continue
+    seen.add(lower)
+    out.push({ name, kind: COMPANY_SUFFIX.test(name) ? 'company' : 'person' })
+  }
+  return out
+}
+
 /**
  * No-API fallback: propose one candidate per sentence that contains both a
  * date and a known character. Crude, but it keeps ingestion usable offline.
@@ -68,6 +106,7 @@ export function heuristicExtract(text: string, entities: Entity[]): CandidateEve
       summary: sentence,
       quote: sentence,
       entityIds,
+      newEntities: detectNewNames(sentence, entities),
     })
   }
   return candidates
@@ -84,6 +123,9 @@ From the source text below, extract discrete factual events. For each event retu
 - "summary": one neutral sentence describing what happened
 - "quote": the passage of the source text that asserts it (verbatim or near-verbatim)
 - "entityIds": ids from the roster for every character involved
+- "newEntities": people or companies NOT in the roster who play a real role in
+  the event, as [{"name": "...", "kind": "person"|"company"}]. Only name actors,
+  never places, products or incidental mentions.
 
 Respond with ONLY a JSON array of these objects. If no dateable events exist, return [].
 
@@ -104,6 +146,9 @@ function parseCandidates(raw: string, entities: Entity[]): CandidateEvent[] {
       summary: String(c.summary ?? c.title),
       quote: String(c.quote),
       entityIds: (c.entityIds ?? []).filter((id) => known.has(id)),
+      newEntities: (c.newEntities ?? [])
+        .filter((n) => n?.name)
+        .map((n) => ({ name: String(n.name), kind: n.kind === 'company' ? 'company' as const : 'person' as const })),
     }))
 }
 

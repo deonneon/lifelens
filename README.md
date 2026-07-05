@@ -35,6 +35,10 @@ This is how the app handles wrong news: nothing is overwritten. The SEC's "false
 
 **+ Add source** (`/ingest`) takes any pasted text plus source metadata. LifeLens proposes candidate events from it (via Gemini or OpenAI if a key is configured, otherwise a built-in date-and-name matcher). You review each candidate and either **merge it into an existing event** as a new account — choosing its stance — or **create a new event**. The universe only grows; disputes accumulate rather than overwrite.
 
+### The significance gate
+
+Extraction also spots **unknown names**, but a mention is not a character. New names land on the **orbit watch** (`/characters#orbit-watch`) as pending characters, accumulating cited mentions across events. Only when a name proves significant to the story — appearing in **3 distinct documented events**, or promoted manually by your judgment — does it become a full character, with its mention history converted into cited event participations and auto-seeded relationships. Names that never matter can be dismissed, so the universe doesn't fill with walk-on parts. The seed ships with Peter Thiel and Kimbal Musk waiting on the watch list at 2/3 events each.
+
 ## Seed data
 
 The app ships with a curated, genuinely-cited seed: ~25 real events across 14 characters and ~26 real sources (Vance's and Isaacson's biographies, the Tesla incorporation certificate, *Eberhard v. Musk*, the SEC complaint and settlement, NASA awards, Reuters reporting, Musk's own posts…). It includes real disputes — the Tesla founder fight, "funding secured," and the Apple acquisition story — so the dispute machinery is visible out of the box. Your additions persist in `localStorage`; a footer button resets to seed.
@@ -62,6 +66,5 @@ Vite · React 19 · TypeScript · Tailwind CSS · react-router-dom. No backend: 
 ## Future directions
 
 - Real persistence and multi-user curation (votes on accounts, editor trails)
-- Entity extraction that proposes *new* characters, not just known ones
 - Independence detection (two outlets citing the same wire story ≠ two sources)
 - Confidence scoring over time, contradiction alerts, and export to static wiki pages

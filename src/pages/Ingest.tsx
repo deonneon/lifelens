@@ -5,16 +5,25 @@ import { useUniverse } from '../lib/store'
 import { SOURCE_TYPE_META, formatDate, freshId, yearOf } from '../lib/evidence'
 import { extractEvents } from '../lib/extract'
 import type { CandidateEvent } from '../lib/extract'
+import { SIGNIFICANCE_THRESHOLD } from '../lib/mentions'
+import type { MentionInput } from '../lib/mentions'
 
-interface ReviewRow extends CandidateEvent {
+interface ReviewNewEntity {
+  name: string
+  kind: 'person' | 'company'
+  track: boolean
+}
+
+interface ReviewRow extends Omit<CandidateEvent, 'newEntities'> {
   include: boolean
   /** '' = create a new event; otherwise merge as an account on this event. */
   mergeInto: string
   stance: Stance
+  newEntities: ReviewNewEntity[]
 }
 
 export function IngestPage() {
-  const { state, addSource, addEvent, addAccount } = useUniverse()
+  const { state, addSource, addEvent, addAccount, recordMentions } = useUniverse()
   const navigate = useNavigate()
 
   const [meta, setMeta] = useState({
@@ -49,7 +58,13 @@ export function IngestPage() {
               yearOf(ev.date) === yearOf(c.date) &&
               ev.participants.some((p) => c.entityIds.includes(p.entityId)),
           )
-          return { ...c, include: true, mergeInto: near?.id ?? '', stance: 'supports' as Stance }
+          return {
+            ...c,
+            include: true,
+            mergeInto: near?.id ?? '',
+            stance: 'supports' as Stance,
+            newEntities: c.newEntities.map((n) => ({ ...n, track: true })),
+          }
         }),
       )
     } finally {
@@ -73,18 +88,21 @@ export function IngestPage() {
       date: meta.date || undefined,
       url: meta.url.trim() || undefined,
     })
+    const mentions: MentionInput[] = []
     for (const row of rows) {
       if (!row.include) continue
+      let eventId: string
       if (row.mergeInto) {
+        eventId = row.mergeInto
         addAccount({
           id: freshId('acc'),
-          eventId: row.mergeInto,
+          eventId,
           sourceId,
           stance: row.stance,
           quote: row.quote,
         })
       } else {
-        const eventId = freshId('ev')
+        eventId = freshId('ev')
         addEvent(
           {
             id: eventId,
@@ -97,7 +115,11 @@ export function IngestPage() {
           [{ id: freshId('acc'), eventId, sourceId, stance: 'supports', quote: row.quote }],
         )
       }
+      for (const n of row.newEntities) {
+        if (n.track) mentions.push({ name: n.name, kindGuess: n.kind, eventId, sourceId })
+      }
     }
+    if (mentions.length > 0) recordMentions(mentions)
     navigate('/timeline')
   }
 
@@ -271,6 +293,50 @@ export function IngestPage() {
                     )
                   })}
                 </div>
+                {row.newEntities.length > 0 && (
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] text-slate-500">
+                      Unknown names — tracked as mentions, promoted to characters only after{' '}
+                      {SIGNIFICANCE_THRESHOLD} events:
+                    </span>
+                    {row.newEntities.map((n, k) => (
+                      <span key={n.name} className="inline-flex overflow-hidden rounded-full ring-1 ring-inset ring-white/10">
+                        <button
+                          onClick={() =>
+                            updateRow(i, {
+                              newEntities: row.newEntities.map((x, j) =>
+                                j === k ? { ...x, track: !x.track } : x,
+                              ),
+                            })
+                          }
+                          className={`px-2.5 py-0.5 text-[11px] transition ${
+                            n.track
+                              ? 'bg-amber-500/20 text-amber-200'
+                              : 'bg-white/5 text-slate-500 line-through'
+                          }`}
+                          title={n.track ? 'Will be tracked on the orbit watch' : 'Ignored'}
+                        >
+                          {n.name}
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateRow(i, {
+                              newEntities: row.newEntities.map((x, j) =>
+                                j === k
+                                  ? { ...x, kind: x.kind === 'person' ? 'company' : 'person' }
+                                  : x,
+                              ),
+                            })
+                          }
+                          className="bg-white/5 px-1.5 py-0.5 text-[11px] text-slate-400 transition hover:text-white"
+                          title="Toggle person / company"
+                        >
+                          {n.kind === 'person' ? '●' : '■'}
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400">
                   <select
                     value={row.mergeInto}
