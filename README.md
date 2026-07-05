@@ -1,83 +1,67 @@
-# LifeLens
+# LifeLens — The Musk Universe, Cited
 
-## Overview
-LifeLens is a dynamic, web-based autobiography platform built with Vite and React using TypeScript, designed to transform a user's freeform text into a structured, visually engaging life story. Powered by an LLM (like Grok from xAI), the app takes a single body of text as input—such as "Born in 1990 in Chicago. Moved to Paris in 2015 and started a bakery."—and processes it to generate a polished bio summary and an interactive timeline of key events.
+LifeLens is a **living biography** of the Elon Musk universe — Musk, Tesla, SpaceX, xAI, and every person and company caught in their orbit. It works like a Wikipedia crossed with an evidence locker: any source can be ingested (biographies, SEC filings, reputable reporting, first-hand statements, even rumors), the record only ever grows, and every claim is traceable to the specific accounts that back it — or dispute it.
 
-## Key Features
+## The core idea: events, not articles
 
-### Input Experience
-- **Simple Input**: Users paste a narrative text into a textarea within a modal, eliminating the need for structured fields like dates or titles.
-- **LLM-Driven Processing**: The LLM parses the input, extracting milestones and crafting a cohesive bio and timeline (e.g., a bio like "A journey from Chicago to Paris, marked by a bakery's rise" and events like "1990 - Born" and "2015 - Moved to Paris").
+The atomic unit is the **Event**: something that happened at a point in time, involving one or more **characters** (people or companies). Events are never asserted as bare facts. They exist only through **Accounts** — what a specific **Source** says about the event, with a stance:
 
-### User Interface
-- **Timeline View**: A scrollable, card-based timeline with hover animations, displaying events with dates, titles, and descriptions.
-- **Bio Summary**: A dynamic paragraph above the timeline, reflecting the LLM-generated narrative.
-- **Aesthetic Design**: Features a gradient background (blue to purple), typewriter-style fonts, and a nostalgic yet modern feel.
-- **Navigation**: Built with react-router-dom, offering "Home" (input page) and "Timeline" (output page) routes.
-- **State Handling**: Uses localStorage to temporarily store the LLM's output, with potential for expansion to Context or Redux.
+- **supports** — the source affirms the event as described
+- **disputes** — the source contradicts it
+- **clarifies** — the source adds context that reframes it
 
-## Technical Details
-- **Framework**: Vite with React and TypeScript for fast development and type safety.
-- **Dependencies**: axios for API calls, react-router-dom for routing.
-- **Structure**: Modular components (Header, Home, Modal, Timeline) with typed props and state.
-- **LLM Integration**: Designed to connect to an LLM API (OpenAI by default), with a properly structured prompt to generate a bio and timeline events.
+An event's truth-status is **derived, never hand-written**, from its accounts:
 
-## Workflow
-1. On the "Home" page, users click "Start Your Story" to open a modal.
-2. They paste their life story into a textarea and click "Generate with AI."
-3. The LLM processes the text, producing a bio and timeline, which are stored and displayed on the "Timeline" page after redirection.
-4. Users view their story as a summary and interactive timeline cards.
+| Status | Meaning |
+|---|---|
+| 🟢 Corroborated | Backed by an official record, or ≥2 independent non-rumor sources |
+| 🔵 Single source | Only one non-rumor source so far |
+| 🔴 Disputed | At least one account challenges the event as described |
+| 🟡 Rumor | Supported only by unverified sources |
 
-## Setup Instructions
+Sources are tiered by reliability: **T1** official records (court filings, SEC documents) → **T2** researched work (reporting, biographies) → **T3** self-reported (tweets, press releases, autobiography — primary but self-interested) → **T4** rumor. Rumors are welcome: they enter the record at tier 4 and get judged against everything else, because with enough accounts the truth tends to surface.
 
-### Prerequisites
-- Node.js (v14 or later)
-- npm or yarn
-- An API key from an LLM provider (OpenAI by default)
+This is how the app handles wrong news: nothing is overwritten. The SEC's "false and misleading" complaint sits directly beside Musk's "funding secured" tweet; Tim Cook's "I've never spoken to Elon" sits beside Musk's story of trying to sell Tesla to Apple. Readers see all accounts, their tiers, and their stances — and judge.
 
-### Installation
-1. Clone the repository
-   ```bash
-   git clone https://github.com/your-username/lifelens.git
-   cd lifelens
-   ```
-2. Install dependencies
-   ```bash
-   npm install
-   # or
-   yarn
-   ```
-3. Set up environment variables
-   - Copy `.env.example` to `.env`
-   - Add your LLM API key to the `.env` file:
-     ```
-     VITE_LLM_API_KEY=your_api_key_here
-     ```
-   - Optionally, change the LLM API URL if using a different provider
-4. Start the development server
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+## Five lenses over one dataset
 
-## LLM API Configuration
-- The application uses Google's Gemini AI by default, with fallback to OpenAI if Gemini is not available
-- To use Gemini AI:
-  - Get an API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-  - Add it to the `.env` file as `VITE_GEMINI_API_KEY`
-  - Optionally, specify a different model with `VITE_GEMINI_MODEL` (defaults to gemini-pro)
-- To use OpenAI as a fallback:
-  - Get an API key from [OpenAI](https://platform.openai.com/api-keys)
-  - Add it to the `.env` file as `VITE_LLM_API_KEY`
-  - The default model is gpt-3.5-turbo, which is suitable for this application
-- The application will gracefully fall back between providers or use mock data for development
+1. **Universe** (`/`) — a constellation map of every character, connected by relationships, sized by documented activity. The entry point for "focus on the universe."
+2. **Timeline** (`/timeline`) — the master chronology. Filter by character, evidence status, source type, or text to pinpoint any activity by any character.
+3. **Characters** (`/characters/:id`) — wiki-style dossiers with per-sentence citation superscripts, footnotes, relationships, and the character's full event history.
+4. **Events** (`/events/:id`) — the evidence record: all accounts grouped by stance with tier badges, quotes and locators, an explanation of the derived status, and a form to attach new supporting/disputing/clarifying accounts.
+5. **Sources** (`/sources`) — the library everything traces back to, sorted by tier, each expandable to the events it testifies about.
 
-## Future Potential
-- Add loading/error states, markdown support, or image uploads (analyzed by the LLM).
-- Enhance with theme toggles (e.g., vintage vs. modern) or export options (e.g., PDF).
-- Replace localStorage with robust state management for persistence.
+## Additive ingestion
 
----
+**+ Add source** (`/ingest`) takes any pasted text plus source metadata. LifeLens proposes candidate events from it (via Gemini or OpenAI if a key is configured, otherwise a built-in date-and-name matcher). You review each candidate and either **merge it into an existing event** as a new account — choosing its stance — or **create a new event**. The universe only grows; disputes accumulate rather than overwrite.
 
-LifeLens offers a seamless, creative way to document and visualize a life story, leveraging AI to turn raw text into a compelling narrative, all wrapped in an elegant, user-friendly interface.
+## Seed data
+
+The app ships with a curated, genuinely-cited seed: ~25 real events across 14 characters and ~26 real sources (Vance's and Isaacson's biographies, the Tesla incorporation certificate, *Eberhard v. Musk*, the SEC complaint and settlement, NASA awards, Reuters reporting, Musk's own posts…). It includes real disputes — the Tesla founder fight, "funding secured," and the Apple acquisition story — so the dispute machinery is visible out of the box. Your additions persist in `localStorage`; a footer button resets to seed.
+
+## Running it
+
+```bash
+npm install
+npm run dev
+```
+
+Optional LLM extraction for ingest — copy `.env.example` to `.env` and set either:
+
+```
+VITE_GEMINI_API_KEY=...        # Google AI Studio key (VITE_GEMINI_MODEL optional)
+VITE_LLM_API_KEY=...           # OpenAI-compatible key (VITE_LLM_API_URL optional)
+```
+
+Without keys, ingestion falls back to the offline heuristic extractor.
+
+## Stack
+
+Vite · React 19 · TypeScript · Tailwind CSS · react-router-dom. No backend: state lives in React context + `localStorage`, so the evidence model is easy to lift onto a real database later.
+
+## Future directions
+
+- Real persistence and multi-user curation (votes on accounts, editor trails)
+- Entity extraction that proposes *new* characters, not just known ones
+- Independence detection (two outlets citing the same wire story ≠ two sources)
+- Confidence scoring over time, contradiction alerts, and export to static wiki pages

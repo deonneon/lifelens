@@ -1,24 +1,29 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Timeline from './components/Timeline';
-import Home from './components/Home';
-// Now using Tailwind CSS instead of App.css
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { UniverseProvider } from './lib/store'
+import { Layout } from './components/Layout'
+import { UniversePage } from './pages/Universe'
+import { TimelinePage } from './pages/Timeline'
+import { CharacterPage, CharactersIndexPage } from './pages/Characters'
+import { EventPage } from './pages/Event'
+import { SourcesPage } from './pages/Sources'
+import { IngestPage } from './pages/Ingest'
 
-const App: React.FC = () => {
+export default function App() {
   return (
-    <Router>
-      <div className="font-mono bg-dark-900 text-gray-100 min-h-screen">
-        <div className="fixed inset-0 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 z-[-1]" />
-        <Header />
-        <main className="container mx-auto px-4">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/timeline" element={<Timeline />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
-  );
-};
-
-export default App;
+    <UniverseProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<UniversePage />} />
+            <Route path="/timeline" element={<TimelinePage />} />
+            <Route path="/characters" element={<CharactersIndexPage />} />
+            <Route path="/characters/:id" element={<CharacterPage />} />
+            <Route path="/events/:id" element={<EventPage />} />
+            <Route path="/sources" element={<SourcesPage />} />
+            <Route path="/ingest" element={<IngestPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UniverseProvider>
+  )
+}
