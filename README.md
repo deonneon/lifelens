@@ -94,6 +94,10 @@ Without keys, ingestion falls back to the offline heuristic extractor.
 
 Vite · React 19 · TypeScript · Tailwind CSS · react-router-dom. No backend: state lives in React context + `localStorage`, so the evidence model is easy to lift onto a real database later.
 
+## Documentation
+
+Full hierarchical docs — concepts, architecture, one page per feature, design system, reference, and development — live in [`docs/`](docs/README.md). The visual design system is in [`design.md`](design.md).
+
 ## Future directions
 
 - Real persistence and multi-user curation (votes on accounts, editor trails)
